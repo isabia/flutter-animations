@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -22,19 +23,43 @@ class ChartPage extends StatefulWidget {
   ChartPageState createState() => ChartPageState();
 }
 
-class ChartPageState extends State<ChartPage> {
+class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
   final random = Random();
   int dataSet;
+
+  AnimationController animation;
+  double startHeight;
+  double currentHeight;
+  double endHeight;
 
   @override
   void initState() {
     dataSet = 0;
     super.initState();
+    animation = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    )..addListener(() {
+        setState(() {
+          currentHeight = lerpDouble(
+            startHeight,
+            endHeight,
+            animation.value,
+          );
+        });
+      });
+    startHeight = 0.0;
+    currentHeight = 0.0;
+    endHeight = dataSet.toDouble();
+    animation.forward();
   }
 
   void changeData() {
     setState(() {
+      startHeight = currentHeight;
       dataSet = random.nextInt(100);
+      endHeight = dataSet.toDouble();
+      animation.forward(from: 0.0);
     });
   }
 
@@ -53,5 +78,11 @@ class ChartPageState extends State<ChartPage> {
         backgroundColor: Colors.orangeAccent,
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    animation.dispose();
+    super.dispose();
   }
 }

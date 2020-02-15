@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'barchartpainter.dart';
+
 void main() {
   runApp(MaterialApp(home: ChartPage()));
 }
@@ -25,10 +27,13 @@ class ChartPageState extends State<ChartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text('Data set: $dataSet'),
+        child: CustomPaint(
+          size: Size(200.0, 100.0),
+          painter: BarChartPainter(dataSet.toDouble()),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.refresh),
+        child: Icon(Icons.add),
         onPressed: changeData,
       ),
     );

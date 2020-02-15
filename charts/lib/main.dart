@@ -5,7 +5,16 @@ import 'package:flutter/material.dart';
 import 'barchartpainter.dart';
 
 void main() {
-  runApp(MaterialApp(home: ChartPage()));
+  runApp(MaterialApp(
+    home: ChartPage(),
+    theme: ThemeData(
+      brightness: Brightness.light,
+      primarySwatch: Colors.orange,
+    ),
+    darkTheme:
+        ThemeData(brightness: Brightness.dark, primarySwatch: Colors.orange),
+    debugShowCheckedModeBanner: false,
+  ));
 }
 
 class ChartPage extends StatefulWidget {
@@ -16,6 +25,12 @@ class ChartPage extends StatefulWidget {
 class ChartPageState extends State<ChartPage> {
   final random = Random();
   int dataSet;
+
+  @override
+  void initState() {
+    dataSet = 0;
+    super.initState();
+  }
 
   void changeData() {
     setState(() {
@@ -35,6 +50,7 @@ class ChartPageState extends State<ChartPage> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: changeData,
+        backgroundColor: Colors.orangeAccent,
       ),
     );
   }

@@ -10,7 +10,7 @@ class BarChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.blue[400]
+      ..color = Colors.orange[400]
       ..style = PaintingStyle.fill;
     canvas.drawRect(
       Rect.fromLTWH(

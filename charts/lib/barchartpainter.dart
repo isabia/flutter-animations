@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 
 class BarChartPainter extends CustomPainter {
-  static const barWidth = 10.0;
+  static const barWidth = 16.0;
 
-  BarChartPainter(this.barHeight);
+  BarChartPainter(Animation<double> animation)
+      : animation = animation,
+        super(repaint: animation);
 
-  final double barHeight;
+  final Animation<double> animation;
 
   @override
   void paint(Canvas canvas, Size size) {
+    final barHeight = animation.value;
     final paint = Paint()
       ..color = Colors.orange[400]
       ..style = PaintingStyle.fill;
@@ -24,5 +27,5 @@ class BarChartPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(BarChartPainter old) => barHeight != old.barHeight;
+  bool shouldRepaint(BarChartPainter old) => false;
 }

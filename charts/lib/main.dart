@@ -25,40 +25,28 @@ class ChartPage extends StatefulWidget {
 
 class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
   final random = Random();
-  int dataSet;
-
+  int dataSet = 50;
   AnimationController animation;
-  double startHeight;
-  double currentHeight;
-  double endHeight;
+  Tween<double> tween;
 
   @override
   void initState() {
-    dataSet = 0;
     super.initState();
     animation = AnimationController(
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
-    )..addListener(() {
-        setState(() {
-          currentHeight = lerpDouble(
-            startHeight,
-            endHeight,
-            animation.value,
-          );
-        });
-      });
-    startHeight = 0.0;
-    currentHeight = 0.0;
-    endHeight = dataSet.toDouble();
+    );
+    tween = Tween<double>(begin: 0.0, end: dataSet.toDouble());
     animation.forward();
   }
 
   void changeData() {
     setState(() {
-      startHeight = currentHeight;
       dataSet = random.nextInt(100);
-      endHeight = dataSet.toDouble();
+      tween = Tween<double>(
+        begin: tween.evaluate(animation),
+        end: dataSet.toDouble(),
+      );
       animation.forward(from: 0.0);
     });
   }
@@ -69,13 +57,14 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
       body: Center(
         child: CustomPaint(
           size: Size(200.0, 100.0),
-          painter: BarChartPainter(dataSet.toDouble()),
+          painter: BarChartPainter(tween.animate(animation)),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: changeData,
         backgroundColor: Colors.orangeAccent,
+        tooltip: "Tap here for increase the graph",
       ),
     );
   }

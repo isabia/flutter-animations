@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
 
-class BarChartPainter extends CustomPainter {
-  static const barWidth = 16.0;
+import 'bar.dart';
 
-  BarChartPainter(Animation<double> animation)
+class BarChartPainter extends CustomPainter {
+  static const barWidth = 20.0;
+
+  BarChartPainter(Animation<Bar> animation)
       : animation = animation,
         super(repaint: animation);
 
-  final Animation<double> animation;
+  final Animation<Bar> animation;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final barHeight = animation.value;
+    final bar = animation.value;
     final paint = Paint()
       ..color = Colors.orange[400]
       ..style = PaintingStyle.fill;
     canvas.drawRect(
       Rect.fromLTWH(
         (size.width - barWidth) / 2.0,
-        size.height - barHeight,
+        size.height - bar.height,
         barWidth,
-        barHeight,
+        bar.height,
       ),
       paint,
     );

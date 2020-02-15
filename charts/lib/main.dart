@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:charts/bar.dart';
 import 'package:flutter/material.dart';
 
 import 'barchartpainter.dart';
@@ -24,10 +25,10 @@ class ChartPage extends StatefulWidget {
 }
 
 class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
-  final random = Random();
   int dataSet = 50;
   AnimationController animation;
-  Tween<double> tween;
+  BarTween barTween;
+  final random = Random();
 
   @override
   void initState() {
@@ -36,16 +37,15 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    tween = Tween<double>(begin: 0.0, end: dataSet.toDouble());
+    barTween = BarTween(Bar(0.0), Bar(50.0));
     animation.forward();
   }
 
   void changeData() {
     setState(() {
-      dataSet = random.nextInt(100);
-      tween = Tween<double>(
-        begin: tween.evaluate(animation),
-        end: dataSet.toDouble(),
+      barTween = BarTween(
+        barTween.evaluate(animation),
+        Bar(random.nextDouble() * 100.0),
       );
       animation.forward(from: 0.0);
     });
@@ -57,7 +57,7 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
       body: Center(
         child: CustomPaint(
           size: Size(200.0, 100.0),
-          painter: BarChartPainter(tween.animate(animation)),
+          painter: BarChartPainter(barTween.animate(animation)),
         ),
       ),
       floatingActionButton: FloatingActionButton(

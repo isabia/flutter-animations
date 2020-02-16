@@ -15,8 +15,8 @@ class BarChart {
   }
 
   factory BarChart.random(Size size, Random random) {
-    const groupWidthFraction = 0.75;
-    const stackWidthFraction = 0.9;
+    const groupWidthFraction = 1.0;
+    const stackWidthFraction = 1.25;
     final groupRanks = _selectRanks(random, 5);
     final groupCount = groupRanks.length;
     final groupDistance = size.width / (1 + groupCount);

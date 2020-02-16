@@ -1,40 +1,26 @@
 import 'dart:math';
 import 'dart:ui' show lerpDouble;
 
-import 'package:charts/color_pallet.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 
+import 'color_palette.dart';
+
 class BarChart {
-  static const int barCount = 5;
-
-  BarChart(this.bars) {
-    assert(bars.length == barCount);
-  }
-
-  factory BarChart.empty() {
-    return BarChart(List.filled(
-      barCount,
-      Bar(0.0, Colors.transparent),
-    ));
-  }
-
-  factory BarChart.random(Random random) {
-    final Color color = ColorPalette.primary.random(random);
-    return BarChart(List.generate(
-      barCount,
-      (i) => Bar(random.nextDouble() * 100.0, color),
-    ));
-  }
+  BarChart(this.bars);
 
   final List<Bar> bars;
 
   static BarChart lerp(BarChart begin, BarChart end, double t) {
-    return BarChart(List.generate(
+    final barCount = max(begin.bars.length, end.bars.length);
+    final bars = List.generate(
       barCount,
-      (i) => Bar.lerp(begin.bars[i], end.bars[i], t),
-    ));
+      (i) => Bar.lerp(begin._barOrNull(i), end._barOrNull(i), t),
+    );
+    return BarChart(bars);
   }
+
+  Bar _barOrNull(int index) => (index < bars.length ? bars[index] : null);
 }
 
 class BarChartTween extends Tween<BarChart> {
@@ -53,11 +39,12 @@ class Bar {
   final Color color;
 
   static Bar lerp(Bar begin, Bar end, double t) {
+    if (begin == null && end == null) return null;
     return Bar(
-      lerpDouble(begin.x, end.x, t),
-      lerpDouble(begin.width, end.width, t),
-      lerpDouble(begin.height, end.height, t),
-      Color.lerp(begin.color, end.color, t),
+      lerpDouble((begin ?? end).x, (end ?? begin).x, t),
+      lerpDouble(begin?.width, end?.width, t),
+      lerpDouble(begin?.height, end?.height, t),
+      Color.lerp((begin ?? end).color, (end ?? begin).color, t),
     );
   }
 }

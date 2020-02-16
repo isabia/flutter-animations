@@ -3,29 +3,33 @@ import 'package:flutter/material.dart';
 import 'bar.dart';
 
 class BarChartPainter extends CustomPainter {
-  static const barWidth = 20.0;
+  static const barWidthFraction = 0.75;
 
-  BarChartPainter(Animation<Bar> animation)
+  BarChartPainter(Animation<BarChart> animation)
       : animation = animation,
         super(repaint: animation);
 
-  final Animation<Bar> animation;
+  final Animation<BarChart> animation;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final bar = animation.value;
-    final paint = Paint()
-      ..color = Colors.orange[400]
-      ..style = PaintingStyle.fill;
-    canvas.drawRect(
-      Rect.fromLTWH(
-        (size.width - barWidth) / 2.0,
-        size.height - bar.height,
-        barWidth,
-        bar.height,
-      ),
-      paint,
-    );
+    void drawBar(Bar bar, double x, double width, Paint paint) {
+      paint.color = bar.color;
+      canvas.drawRect(
+        Rect.fromLTWH(x, size.height - bar.height, width, bar.height),
+        paint,
+      );
+    }
+
+    final paint = Paint()..style = PaintingStyle.fill;
+    final chart = animation.value;
+    final barDistance = size.width / (1 + chart.bars.length);
+    final barWidth = barDistance * barWidthFraction;
+    var x = barDistance - barWidth / 2;
+    for (final bar in chart.bars) {
+      drawBar(bar, x, barWidth, paint);
+      x += barDistance;
+    }
   }
 
   @override

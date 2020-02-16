@@ -1,9 +1,9 @@
 import 'dart:math';
-import 'dart:ui';
 
-import 'package:charts/bar.dart';
+import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 
+import 'bar.dart';
 import 'barchartpainter.dart';
 
 void main() {
@@ -25,10 +25,10 @@ class ChartPage extends StatefulWidget {
 }
 
 class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
-  int dataSet = 50;
-  AnimationController animation;
-  BarTween barTween;
+  static const size = const Size(200.0, 100.0);
   final random = Random();
+  AnimationController animation;
+  BarChartTween tween;
 
   @override
   void initState() {
@@ -37,16 +37,24 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    barTween = BarTween(
-        Bar(0.0, Colors.orangeAccent), Bar(50.0, Colors.greenAccent[400]));
+    tween = BarChartTween(
+      BarChart.empty(size),
+      BarChart.random(size, random),
+    );
     animation.forward();
+  }
+
+  @override
+  void dispose() {
+    animation.dispose();
+    super.dispose();
   }
 
   void changeData() {
     setState(() {
-      barTween = BarTween(
-        barTween.evaluate(animation),
-        Bar(random.nextDouble() * 100.0, Colors.orangeAccent),
+      tween = BarChartTween(
+        tween.evaluate(animation),
+        BarChart.random(size, random),
       );
       animation.forward(from: 0.0);
     });
@@ -57,22 +65,14 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
     return Scaffold(
       body: Center(
         child: CustomPaint(
-          size: Size(200.0, 100.0),
-          painter: BarChartPainter(barTween.animate(animation)),
+          size: size,
+          painter: BarChartPainter(tween.animate(animation)),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: Icon(Icons.refresh),
         onPressed: changeData,
-        backgroundColor: Colors.orangeAccent,
-        tooltip: "Tap here for increase the graph",
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    animation.dispose();
-    super.dispose();
   }
 }
